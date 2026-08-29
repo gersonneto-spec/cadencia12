@@ -481,7 +481,7 @@ const DEF = {
   v:1,
   perfil:{nome:"Gerson", peso:102, idade:null, fcMax:null, fcRep:null, inicio:"2026-08-24"},
   feitos:{}, testes:[], trocas:{}, xp:0, ofensiva:0, recorde:0, ultimo:null, escudos:0, medalhas:[],
-  opts:{voz:true, frases:true, bipe:true}, updatedAt:0
+  opts:{voz:true, frases:true, bipe:true, domNivel:"leve"}, updatedAt:0
 };
 const RECUP30 = W.rec(30);
 function sessaoAtiva(sem,dia,ds){ return (ds && S.trocas && S.trocas[ds]) ? RECUP30 : sessaoDe(sem,dia); }
@@ -533,7 +533,14 @@ function posicao(dateStr){
   if(n>83) return {semana:12,dia:6,depois:true,n};
   return {semana:Math.floor(n/7)+1, dia:n%7, n};
 }
-const sessaoDe = (sem,dia) => PLANO[sem-1].d[dia];
+function diaEfetivo(dia){
+  if(dia!==6) return dia; // so o domingo e ajustavel
+  const nv=S.opts.domNivel||"leve";
+  if(nv==="forte") return 0;      // mesma sessao de VO2 da segunda
+  if(nv==="moderado") return 1;   // mesma base aerobica Z2 da terca
+  return 6;                       // leve = recuperacao ativa, padrao
+}
+const sessaoDe = (sem,dia) => PLANO[sem-1].d[diaEfetivo(dia)];
 function dataDe(sem,dia){ const d=parseISO(S.perfil.inicio); d.setDate(d.getDate()+(sem-1)*7+dia); return iso(d); }
 const fmtBR = s => { const d=parseISO(s); return `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`; };
 const mmss = t => `${String(Math.floor(t/60)).padStart(2,"0")}:${String(Math.floor(t%60)).padStart(2,"0")}`;
@@ -883,6 +890,22 @@ function viewPerfil(v){
     S.opts.voz=antes; beep(920,0.3,0.18);
   };
   box.append(som);
+
+  const NIV_DOM=[["leve","Leve","Recuperacao ativa (padrao)"],["moderado","Moderado","Base aerobica Z2, mesma da terca"],["forte","Forte","VO2 intervalado, mesmo da segunda"]];
+  const semanaOpt=el(`<div class="card pad">
+    <span class="eyebrow">Sua semana</span>
+    <h3 style="font-size:19px;margin:6px 0 4px">Intensidade de domingo</h3>
+    <p class="small muted" style="margin:0 0 10px">Domingo e seu dia livre. Escolha o quanto quer puxar nele.</p>
+    <div class="grid3" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="domNivelBtns">
+      ${NIV_DOM.map(([id,nome])=>`<button class="badge${S.opts.domNivel===id?" on":""}" data-nv="${id}" style="cursor:pointer"><span class="ic" style="font-size:14px;font-weight:800">${nome}</span></button>`).join("")}
+    </div>
+    <div class="small muted" style="margin-top:8px" id="domNivelDesc">${NIV_DOM.find(n=>n[0]===(S.opts.domNivel||"leve"))[2]}</div>
+  </div>`);
+  semanaOpt.querySelectorAll("#domNivelBtns button").forEach(btn=>btn.onclick=()=>{
+    S.opts.domNivel=btn.dataset.nv;
+    salvar(); render();
+  });
+  box.append(semanaOpt);
 
   box.append(el(`<div class="card pad">
     <span class="eyebrow">Calibração da bike</span>
