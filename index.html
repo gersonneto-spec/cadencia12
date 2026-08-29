@@ -891,11 +891,11 @@ function viewPerfil(v){
   };
   box.append(som);
 
-  const NIV_DOM=[["leve","Leve","Recuperacao ativa (padrao)"],["moderado","Moderado","Base aerobica Z2, mesma da terca"],["forte","Forte","VO2 intervalado, mesmo da segunda"]];
+  const NIV_DOM=[["leve","Leve","Recuperação ativa (padrão)"],["moderado","Moderado","Base aeróbica Z2, mesma da terça"],["forte","Forte","VO₂ intervalado, mesmo da segunda"]];
   const semanaOpt=el(`<div class="card pad">
     <span class="eyebrow">Sua semana</span>
     <h3 style="font-size:19px;margin:6px 0 4px">Intensidade de domingo</h3>
-    <p class="small muted" style="margin:0 0 10px">Domingo e seu dia livre. Escolha o quanto quer puxar nele.</p>
+    <p class="small muted" style="margin:0 0 10px">Domingo é seu dia livre. Escolha o quanto quer puxar nele.</p>
     <div class="grid3" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="domNivelBtns">
       ${NIV_DOM.map(([id,nome])=>`<button class="badge${S.opts.domNivel===id?" on":""}" data-nv="${id}" style="cursor:pointer"><span class="ic" style="font-size:14px;font-weight:800">${nome}</span></button>`).join("")}
     </div>
