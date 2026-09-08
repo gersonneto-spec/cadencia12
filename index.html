@@ -164,11 +164,13 @@ nav.tabs button[aria-current="true"]{color:var(--accent)}
 .ptargets div{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:9px 6px}
 .ptargets b{display:block;font-family:"IBM Plex Mono";font-size:19px;font-weight:600}
 .ptargets span{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
-.pnext{font-size:13px;color:var(--muted);margin-top:10px}
-.prail{display:flex;gap:2px;height:18px;padding:0 16px;position:relative}
-.prail div{flex:none;border-radius:2px;opacity:.3;transition:opacity .2s}
-.prail div.done{opacity:.65}
-.prail div.now{opacity:1;box-shadow:0 0 0 2px var(--bg),0 0 0 3px currentColor}
+.presdesc{font-size:clamp(12px,3.4vw,14px);color:var(--muted);text-align:center;margin-top:6px;max-width:32ch}
+.pnext{font-size:clamp(15px,4.2vw,18px);font-weight:600;color:var(--text);margin-top:10px}
+.prailwrap{position:relative;margin:2px 0}
+.prail{display:flex;gap:3px;height:clamp(22px,6.5vw,32px);padding:0 16px;position:relative}
+.prail div{flex:none;border-radius:4px}
+.prail div.now{box-shadow:0 0 0 2px var(--bg),0 0 0 3px currentColor;position:relative;z-index:1}
+.prailmask{position:absolute;top:0;bottom:0;left:16px;right:16px;background:var(--surface2);opacity:.85;border-radius:4px;pointer-events:none;clip-path:inset(0 0 0 0%)}
 .pfoot{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:14px 16px calc(18px + env(safe-area-inset-bottom,0px))}
 .pfoot button{padding:14px 6px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:14px}
 .pfoot button.main{background:var(--accent);color:var(--accent-ink);border-color:transparent}
@@ -250,6 +252,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
       <div><b id="pRes">—</b><span>Resistência</span></div>
       <div><b id="pZone">—</b><span>Zona FC</span></div>
     </div>
+    <div class="presdesc" id="pResDesc"></div>
     <div class="pnext" id="pNext"></div>
     <div class="prep" id="pPrep">
       <span class="preplabel">Prepara</span>
@@ -258,7 +261,10 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
       <div class="prepdet" id="pPrepDet"></div>
     </div>
   </div>
-  <div class="prail" id="pRail"></div>
+  <div class="prailwrap">
+    <div class="prail" id="pRail"></div>
+    <div class="prailmask" id="pRailMask"></div>
+  </div>
   <div class="pfoot">
     <button id="pQuit">Sair</button>
     <button id="pPlay" class="main">Pausar</button>
@@ -280,6 +286,15 @@ const ZONES = {
   5:{n:"Z5", nome:"VO₂máx",       pct:"90–100% FCmáx",rpe:"9–10",met:13.0,v:"--z5"}
 };
 const zc = z => `var(${ZONES[z].v})`;
+
+const RES_DESC = {
+  "R2":"quase sem carga, pedalada solta",
+  "R3":"leve, respira só pelo nariz",
+  "R4":"moderada, dá pra falar frases",
+  "R5":"forte, queima em 1 min",
+  "R6":"pesada, fala só 3–4 palavras",
+  "R7":"máxima, não dá pra falar"
+};
 
 function B(sec, z, rpm, res, pos, cue, tag){ return {s:sec, z, rpm, res, pos, cue, tag:tag||"Bloco"}; }
 
@@ -1110,7 +1125,8 @@ async function abrirPlayer(sem,dia,ds){
   const rail=document.getElementById("pRail"); rail.innerHTML="";
   const tot=secOf(P.s);
   P.s.blocos.forEach(b=>{ const d=document.createElement("div");
-    d.style.width=`calc(${(b.s/tot*100).toFixed(3)}% - 2px)`; d.style.background=zc(b.z); d.style.color=zc(b.z); rail.append(d); });
+    d.style.width=`calc(${(b.s/tot*100).toFixed(3)}% - 3px)`; d.style.background=zc(b.z); d.style.color=zc(b.z); rail.append(d); });
+  const rm0=document.getElementById("pRailMask"); if(rm0) rm0.style.clipPath="inset(0 0 0 0%)";
   document.getElementById("player").classList.add("on");
   document.getElementById("pPlay").textContent="Pausar";
   try{ if(navigator.wakeLock) P.lock=await navigator.wakeLock.request("screen"); }catch(e){}
@@ -1147,6 +1163,8 @@ function pintar(){
   document.getElementById("pCue").textContent=b.cue;
   document.getElementById("pRpm").textContent=b.rpm;
   document.getElementById("pRes").textContent=b.res;
+  const rd=document.getElementById("pResDesc");
+  if(rd) rd.textContent = RES_DESC[b.res] ? `${b.res} = ${RES_DESC[b.res]}` : "";
   const alvo=fcAlvo(b.z);
   document.getElementById("pZone").textContent=alvo?alvo:z.n;
   document.getElementById("pBlockBar").parentElement.style.color=zc(b.z);
@@ -1165,6 +1183,8 @@ function tempos(){
   document.getElementById("pProg").style.width=(dec/P.total*100).toFixed(2)+"%";
   const b=P.s.blocos[P.i];
   document.getElementById("pBlockBar").style.width=(Math.max(0,(b.s-P.left))/b.s*100).toFixed(2)+"%";
+  const rm=document.getElementById("pRailMask");
+  if(rm) rm.style.clipPath=`inset(0 0 0 ${(dec/P.total*100).toFixed(2)}%)`;
 }
 function prepararTransicao(seg){
   const b=P.s.blocos[P.i], prox=P.s.blocos[P.i+1];
