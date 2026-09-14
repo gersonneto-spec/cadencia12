@@ -444,7 +444,7 @@ const PLANO = [
   {b:1,dl:0,d:[W.vo2(4,4,3), W.z2(45), W.ss(3,6),  W.baseCad(45), W.hiit(3,5), W.long(50), W.ativa()]},
   {b:1,dl:0,d:[W.vo2(4,4,3), W.z2(50), W.ss(3,8),  W.baseCad(50), W.hiit(3,6), W.long(55), W.ativa()]},
   {b:1,dl:0,d:[W.vo2(5,4,3), W.z2(50), W.ss(3,10), W.baseCad(50), W.hiit(3,8), W.long(60), W.ativa()]},
-  {b:1,dl:1,d:[W.vo2(3,4,3), W.z2(40), W.teste(),  W.baseCad(40), W.hiit(3,5), W.long(45), W.ativa()]},
+  {b:1,dl:"teste",d:[W.vo2(4,4,3), W.z2(45), W.teste(),  W.baseCad(45), W.hiit(3,7), W.long(55), W.ativa()]},
   {b:2,dl:0,d:[W.vo2(5,4,3), W.z2(50), W.thr(2,18),W.baseCad(50), W.hiit(3,7), W.long(60), W.ativa()]},
   {b:2,dl:0,d:[W.t3015(3,11),W.z2(50), W.ss(3,10), W.baseCad(50), W.hiit(3,8), W.long(60), W.ativa()]},
   {b:2,dl:0,d:[W.vo2(6,4,3), W.z2(55), W.thr(2,18),W.baseCad(55), W.hiit(4,6), W.long(60), W.ativa()]},
@@ -706,7 +706,7 @@ function viewHoje(v){
   <div class="card hero pad">
     <div class="glow"></div>
     <div class="row" style="position:relative">
-      <span class="eyebrow">Semana ${p.semana} · ${DIAS[p.dia]} · ${BLOCONOME[PLANO[p.semana-1].b]}${PLANO[p.semana-1].dl?" · Deload":""}</span>
+      <span class="eyebrow">Semana ${p.semana} · ${DIAS[p.dia]} · ${BLOCONOME[PLANO[p.semana-1].b]}${PLANO[p.semana-1].dl==="teste"?" · Semana de Teste":PLANO[p.semana-1].dl?" · Deload":""}</span>
     </div>
     <h2 style="margin-top:6px">${esc(s.nome)}</h2>
     <div class="muted small" style="margin-top:4px">${esc(s.sub)} · ${esc(s.foco)}</div>
@@ -794,7 +794,7 @@ function viewPrograma(v){
       const tot=w.d.reduce((a,s)=>a+minOf(s),0), kc=w.d.reduce((a,s)=>a+kcalOf(s,kg),0);
       const det=el(`<details class="week" ${aberta?"open":""}>
         <summary><b style="font-family:Archivo;font-weight:800;font-stretch:110%">Semana ${sem}</b>
-        ${w.dl?'<span class="wtag dl">Deload + Teste</span>':`<span class="wtag">${BLOCONOME[bl].split("· ")[1]}</span>`}
+        ${w.dl==="teste"?'<span class="wtag dl">Semana de Teste</span>':w.dl?'<span class="wtag dl">Deload + Teste</span>':`<span class="wtag">${BLOCONOME[bl].split("· ")[1]}</span>`}
         <span class="spacer"></span><span class="mono small muted">${Math.round(tot/60*10)/10} h · ${kc.toLocaleString("pt-BR")} kcal</span></summary>
         <div class="daylist"></div></details>`);
       const dl=det.querySelector(".daylist");
@@ -945,7 +945,8 @@ function viewPerfil(v){
     <ul class="small" style="margin:10px 0 0;padding-left:18px;line-height:1.7">
       <li><b>XP</b> = minutos + 2× cada minuto em Z4/Z5 + 25 por treinar no dia certo + até 60 de bônus de ofensiva.</li>
       <li><b>Ofensiva</b> quebra se você pular um dia. A cada 14 dias seguidos você ganha um <b>escudo</b> (máx. 2), que cobre automaticamente 1 dia perdido.</li>
-      <li><b>Deload</b> nas semanas 4, 8 e 12: volume menor e teste marco na quarta.</li>
+      <li><b>Semana 4</b> é semana de teste: mesma intensidade das outras, só um pouco menos de volume (sem crescer), e teste marco na quarta.</li>
+      <li><b>Deload</b> nas semanas 8 e 12: volume menor e teste marco na quarta.</li>
       <li><b>Progressão</b>: se terminar uma sessão de VO₂ com RPE 7 ou menos, suba um nível de resistência na próxima.</li>
       <li><b>Musculação primeiro</b>: se as pernas estiverem pesadas do treino de força, troque a sessão do dia por Recuperação Ativa. Perder qualidade nos tiros custa mais do que perder um treino.</li>
     </ul>
