@@ -448,11 +448,11 @@ const PLANO = [
   {b:2,dl:0,d:[W.vo2(5,4,3), W.z2(50), W.thr(2,18),W.baseCad(50), W.hiit(3,7), W.long(60), W.ativa()]},
   {b:2,dl:0,d:[W.t3015(3,11),W.z2(50), W.ss(3,10), W.baseCad(50), W.hiit(3,8), W.long(60), W.ativa()]},
   {b:2,dl:0,d:[W.vo2(6,4,3), W.z2(55), W.thr(2,18),W.baseCad(55), W.hiit(4,6), W.long(60), W.ativa()]},
-  {b:2,dl:1,d:[W.vo2(3,4,3), W.z2(40), W.teste(),  W.baseCad(40), W.hiit(3,5), W.long(45), W.ativa()]},
+  {b:2,dl:"teste",d:[W.vo2(5,4,3), W.z2(50), W.teste(),  W.baseCad(50), W.hiit(4,5), W.long(55), W.ativa()]},
   {b:3,dl:0,d:[W.t3015(3,13),W.z2(50), W.ss(3,12), W.baseCad(50), W.hiit(3,8), W.long(60), W.ativa()]},
   {b:3,dl:0,d:[W.vo2(5,5,3), W.z2(55), W.thr(2,18),W.baseCad(55), W.hiit(4,7), W.long(60), W.ativa()]},
   {b:3,dl:0,d:[W.vo2(6,4,3), W.z2(50), W.ss(3,12), W.baseCad(50), W.hiit(4,8), W.long(60), W.ativa()]},
-  {b:3,dl:1,d:[W.vo2(3,4,3), W.z2(40), W.teste(),  W.baseCad(40), W.hiit(3,5), W.long(45), W.ativa()]}
+  {b:3,dl:"teste",d:[W.vo2(5,4,3), W.z2(45), W.teste(),  W.baseCad(45), W.hiit(4,7), W.long(55), W.ativa()]}
 ];
 const BLOCONOME = {1:"Bloco 1 · Base + VO₂",2:"Bloco 2 · Limiar + VO₂",3:"Bloco 3 · Pico"};
 
@@ -945,8 +945,7 @@ function viewPerfil(v){
     <ul class="small" style="margin:10px 0 0;padding-left:18px;line-height:1.7">
       <li><b>XP</b> = minutos + 2× cada minuto em Z4/Z5 + 25 por treinar no dia certo + até 60 de bônus de ofensiva.</li>
       <li><b>Ofensiva</b> quebra se você pular um dia. A cada 14 dias seguidos você ganha um <b>escudo</b> (máx. 2), que cobre automaticamente 1 dia perdido.</li>
-      <li><b>Semana 4</b> é semana de teste: mesma intensidade das outras, só um pouco menos de volume (sem crescer), e teste marco na quarta.</li>
-      <li><b>Deload</b> nas semanas 8 e 12: volume menor e teste marco na quarta.</li>
+      <li><b>Semanas 4, 8 e 12</b> são semanas de teste: mesma intensidade das outras, só um pouco menos de volume (sem crescer), e teste marco na quarta.</li>
       <li><b>Progressão</b>: se terminar uma sessão de VO₂ com RPE 7 ou menos, suba um nível de resistência na próxima.</li>
       <li><b>Musculação primeiro</b>: se as pernas estiverem pesadas do treino de força, troque a sessão do dia por Recuperação Ativa. Perder qualidade nos tiros custa mais do que perder um treino.</li>
     </ul>
